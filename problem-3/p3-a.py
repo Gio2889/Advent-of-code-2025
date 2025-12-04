@@ -31,3 +31,5 @@ if __name__ == "__main__":
     banks =  txt_to_list_reader("problem-3/real-input.txt")
     result = solution(banks)
     print(f"Result is: {result}")
+
+
