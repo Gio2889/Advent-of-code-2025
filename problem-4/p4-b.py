@@ -68,8 +68,8 @@ def make_numerical(array):
     return np.array(array)
 
 def make_image(array,k,width):
-    plt.imshow(array, cmap='viridis')  # 'viridis' is a common colormap
-    #plt.colorbar(label='Value')  # Add a colorbar to interpret the colors
+    plt.imshow(array, cmap='viridis') 
+    #plt.colorbar(label='Value') 
     plt.axis('off')
     plt.title(f'State {k}')
     plt.savefig(f"problem-4/figures/state_{k:0{width}d}.png",dpi=800)
@@ -77,7 +77,6 @@ def make_image(array,k,width):
 
 def make_gif(image_folder, output_filename="problem-4/figures/state_progress.gif", duration=500, loop=0):
     images = []
-    # Get all image files with common extensions (case-insensitive)
     filenames = sorted([os.path.join(image_folder, f) 
                        for f in os.listdir(image_folder) 
                        if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))])
@@ -101,8 +100,7 @@ def make_gif(image_folder, output_filename="problem-4/figures/state_progress.gif
             append_images=images[1:],
             duration=duration,
             loop=loop,
-            optimize=True  # Optional: optimize the GIF
-        )
+            optimize=True)
         print(f"GIF '{output_filename}' created successfully!")
         
     except Exception as e:
