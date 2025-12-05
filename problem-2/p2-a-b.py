@@ -6,8 +6,6 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from utils.txt_to_list_reader import txt_to_list_reader
 
-ids =  txt_to_list_reader("problem-2/test-input.txt")[0].split(",")
-
 def id_checker(ids: List[str]):
     total=0
     known_invalid=set()

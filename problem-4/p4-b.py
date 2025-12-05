@@ -3,6 +3,10 @@ from pathlib import Path
 from typing import List
 from math import floor
 import numpy  as np
+import matplotlib.pyplot as plt
+from PIL import Image
+import copy
+import os
 sys.path.append(str(Path(__file__).parent.parent))
 
 from utils.txt_to_list_reader import txt_to_list_reader
@@ -34,27 +38,100 @@ def check_state(array : List[List[str]]):
 def count_neighbhors(array : List[List[str]]):
     n,m = len(array),len(array[0])
     removed = 0
-    
     array_curr = array.copy()
- 
+    array_storage =[copy.deepcopy(array_curr)]
     while True:
         #check current state and makes removal
         queued = check_state(array_curr)
         if not queued:
             #no states to remove; we are done. Rerturnt he total
-            return removed
+            return removed,array_storage
+
         while queued:
             # while we have elements edit the state
             element = queued.pop()
             ci,cj = element[0],element[1]
             array_curr[ci][cj] = '.'
             removed+=1
+        array_storage.append(copy.deepcopy(array_curr)) # store the array
 
-                
+def make_numerical(array):
+    n,m = len(array),len(array[0])
+    n,m = len(array),len(array[0])
+    for i in range(n):
+        for j in range(m):
+            if array[i][j] == '@':
+                array[i][j]=1
+            else:
+                array[i][j]=0
+    
+    return np.array(array)
+
+def make_image(array,k,width):
+    plt.imshow(array, cmap='viridis')  # 'viridis' is a common colormap
+    #plt.colorbar(label='Value')  # Add a colorbar to interpret the colors
+    plt.axis('off')
+    plt.title(f'State {k}')
+    plt.savefig(f"problem-4/figures/state_{k:0{width}d}.png",dpi=800)
+    plt.close()
+
+def make_gif(image_folder, output_filename="problem-4/figures/state_progress.gif", duration=500, loop=0):
+    images = []
+    # Get all image files with common extensions (case-insensitive)
+    filenames = sorted([os.path.join(image_folder, f) 
+                       for f in os.listdir(image_folder) 
+                       if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))])
+    
+    if not filenames:
+        print("No images found in the specified folder.")
+        return
+    
+    try:
+        for filename in filenames:
+            images.append(Image.open(filename))
+        
+        last_image = images[-1]
+
+        
+        images = images + [last_image] * (5 - 1)
+
+        images[0].save(
+            output_filename,
+            save_all=True,
+            append_images=images[1:],
+            duration=duration,
+            loop=loop,
+            optimize=True  # Optional: optimize the GIF
+        )
+        print(f"GIF '{output_filename}' created successfully!")
+        
+    except Exception as e:
+        print(f"Error creating GIF: {e}")
+   
+def visualize_states(arrays):
+    numerical_arrays=[]
+    
+    for array in arrays:
+        numerical_arrays.append(make_numerical(array))
+    total_states = len(numerical_arrays)
+    width = len(str(total_states-1)) if total_states > 1 else 1    
+    for k,array in enumerate(numerical_arrays):
+        make_image(array,k,width)
+    make_gif("problem-4/figures")
 
 
 
 if __name__ == "__main__":
-    lines =  txt_to_list_reader("problem-4/test-input.txt")
+    ### Cool set of options for printing matrices using matplot lib
+    # np.set_printoptions(
+    # precision=4,        # Number of decimal places
+    # suppress=True,      # Suppress scientific notation for small numbers
+    # threshold=10,       # Total elements before truncation
+    # edgeitems=10,        # Number of edge items to show when truncated
+    # linewidth=80        # Width of output line
+    # )
+    lines =  txt_to_list_reader("problem-4/real-input.txt")
     array = [[obj for obj in line] for line in lines] # make array 
-    print(count_neighbhors(array))
+    removed,arrays = count_neighbhors(array)
+    print(f"Rolls removed: {removed}")
+    visualize_states(arrays)
