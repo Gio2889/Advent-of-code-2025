@@ -1,7 +1,10 @@
 
-def txt_to_list_reader(file_name: str):
+def txt_to_list_reader(file_name: str, no_strip=False):
     input =[]
     with open(file_name,"r") as f:
         lines = f.readlines()
-        [input.append(line.strip()) for line in lines ]
+        if no_strip:
+            [input.append(line.replace('\n', '')) for line in lines ]
+        else:
+            [input.append(line.strip()) for line in lines ]
     return input
