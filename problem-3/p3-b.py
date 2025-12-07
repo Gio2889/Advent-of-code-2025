@@ -15,7 +15,6 @@ def max_jolt_dp(bank, k):
 
     for i in range(1, n+1): 
         for j in range(1, min(i, k)+1):
-            
             keep = jolts_table[i-1][j] #keep empty string
             
             add_num = jolts_table[i-1][j-1] + bank_str[i-1] #add number
