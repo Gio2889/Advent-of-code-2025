@@ -7,9 +7,6 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from utils.txt_to_list_reader import txt_to_list_reader
 
-# def to_check_from_current(grid,ci,cj,di,dj):
-#     to_check = []
-#     if grid[ci,cj] == 'S':
 class Beam:
     def __init__(self, i,j,name='Beam'):
         self.i = i
